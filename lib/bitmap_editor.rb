@@ -35,6 +35,28 @@ class BitmapEditor
             self.Image[i] = "O"
           end
         end
+      when "H"
+        x1, x2, y, c = line.match(/H ([0-9]+) ([0-9]+) ([0-9]+) ([A-Z])/i).captures
+        x1 = x1.to_i - 1
+        x2 = x2.to_i - 1
+        y = y.to_i - 1
+        if x1 < 0 || x1 > x2 || x2 >= self.N || y < 0 || y >= self.M
+          raise "Can't color pixel outside of the image"
+        end
+        for pixel in y*(self.N+1)+x1..y*(self.N+1)+x2
+          self.Image[pixel] = c
+        end
+      when "V"
+        x, y1, y2, c = line.match(/V ([0-9]+) ([0-9]+) ([0-9]+) ([A-Z])/i).captures
+        x = x.to_i - 1
+        y1 = y1.to_i - 1
+        y2 = y2.to_i - 1
+        if x < 0 || x >= self.N || y1 < 0 || y1 > y2 || y2 >= self.M
+          raise "Can't color pixel outside of the image"
+        end
+        (x+y1*(self.N+1)..x+y2*(self.N+1)).step(self.N+1).each do |pixel|
+          self.Image[pixel] = c
+        end
       when "S"
         if self.Image.length == 0
           puts "There is no image"
