@@ -31,6 +31,7 @@ class BitmapEditor
 
   def initiate_image(line)
     self.Image = ""
+
     regex_match = line.match(/^I ([0-9]+) ([0-9]+)$/i)
     if regex_match.nil?
       raise "Incorrect use of the I command"
@@ -38,9 +39,11 @@ class BitmapEditor
     n, m = regex_match.captures
     self.N = n.to_i
     self.M = m.to_i
+
     if self.N < 1 || self.N > 250 || self.M < 1 || self.N > 250
       raise "Matrix should have at least 1 column and row and at most 250 columns or rows"
     end
+
     for i in 1..self.M
       self.Image += "O"*self.N+"\n"
     end
@@ -54,9 +57,11 @@ class BitmapEditor
     x, y, c = regex_match.captures
     x = x.to_i - 1
     y = y.to_i - 1
+
     if x < 0 || x >= self.N || y < 0 || y >= self.M
       raise "Can't color pixel outside of the image"
     end
+
     self.Image[y*(self.N+1)+x] = c #the +1 is for the \n character that skips the line when we show the image
   end
 
@@ -64,6 +69,7 @@ class BitmapEditor
     if line.length > 1
       raise "Incorrect use of the C command"
     end
+
     for i in 0..self.Image.length-1
       if self.Image[i] != "\n"
         self.Image[i] = "O"
@@ -80,9 +86,11 @@ class BitmapEditor
     x1 = x1.to_i - 1
     x2 = x2.to_i - 1
     y = y.to_i - 1
+
     if x1 < 0 || x1 > x2 || x2 >= self.N || y < 0 || y >= self.M
       raise "Can't color pixel outside of the image"
     end
+
     for pixel in y*(self.N+1)+x1..y*(self.N+1)+x2
       self.Image[pixel] = c
     end
@@ -97,9 +105,11 @@ class BitmapEditor
     x = x.to_i - 1
     y1 = y1.to_i - 1
     y2 = y2.to_i - 1
+
     if x < 0 || x >= self.N || y1 < 0 || y1 > y2 || y2 >= self.M
       raise "Can't color pixel outside of the image"
     end
+
     (x+y1*(self.N+1)..x+y2*(self.N+1)).step(self.N+1).each do |pixel|
       self.Image[pixel] = c
     end
@@ -109,7 +119,8 @@ class BitmapEditor
     if line.length > 1
       raise "Incorrect use of the S command"
     end
-    if self.Image.length == 0
+    
+    if self.Image.nil? || self.Image.length == 0
       puts "There is no image"
     else
       puts self.Image
