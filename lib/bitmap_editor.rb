@@ -50,6 +50,10 @@ class BitmapEditor
   end
 
   def color_pixel(line)
+    if not is_image_initialized()
+      raise "Cannot use the L command before initializing an image"
+    end
+
     regex_match = line.match(/^L ([0-9]+) ([0-9]+) ([A-Z])$/i)
     if regex_match.nil?
       raise "Incorrect use of the L command"
@@ -59,13 +63,17 @@ class BitmapEditor
     y = y.to_i - 1
 
     if x < 0 || x >= self.N || y < 0 || y >= self.M
-      raise "Can't color pixel outside of the image"
+      raise "Can't color pixels outside of the image"
     end
 
     self.Image[y*(self.N+1)+x] = c #the +1 is for the \n character that skips the line when we show the image
   end
 
   def clear_image(line)
+    if not is_image_initialized()
+      raise "Cannot use the C command before initializing an image"
+    end
+
     if line.length > 1
       raise "Incorrect use of the C command"
     end
@@ -78,6 +86,10 @@ class BitmapEditor
   end
 
   def color_row(line)
+    if not is_image_initialized()
+      raise "Cannot use the H command before initializing an image"
+    end
+
     regex_match = line.match(/^H ([0-9]+) ([0-9]+) ([0-9]+) ([A-Z])$/i)
     if regex_match.nil?
       raise "Incorrect use of the H command"
@@ -88,7 +100,7 @@ class BitmapEditor
     y = y.to_i - 1
 
     if x1 < 0 || x1 > x2 || x2 >= self.N || y < 0 || y >= self.M
-      raise "Can't color pixel outside of the image"
+      raise "Can't color pixels outside of the image"
     end
 
     for pixel in y*(self.N+1)+x1..y*(self.N+1)+x2
@@ -97,6 +109,10 @@ class BitmapEditor
   end
 
   def color_column(line)
+    if not is_image_initialized()
+      raise "Cannot use the V command before initializing an image"
+    end
+
     regex_match = line.match(/^V ([0-9]+) ([0-9]+) ([0-9]+) ([A-Z])$/i)
     if regex_match.nil?
       raise "Incorrect use of the V command"
@@ -107,7 +123,7 @@ class BitmapEditor
     y2 = y2.to_i - 1
 
     if x < 0 || x >= self.N || y1 < 0 || y1 > y2 || y2 >= self.M
-      raise "Can't color pixel outside of the image"
+      raise "Can't color pixels outside of the image"
     end
 
     (x+y1*(self.N+1)..x+y2*(self.N+1)).step(self.N+1).each do |pixel|
@@ -120,10 +136,18 @@ class BitmapEditor
       raise "Incorrect use of the S command"
     end
 
-    if self.Image.nil? || self.Image.length == 0
-      puts "There is no image"
+    if not is_image_initialized()
+      puts "There is no image initialized to be shown"
     else
       puts self.Image
+    end
+  end
+
+  def is_image_initialized()
+    if self.Image.nil? || self.Image.length == 0
+      return false
+    else
+      return true
     end
   end
 end
