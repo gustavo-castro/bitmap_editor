@@ -30,6 +30,9 @@ class BitmapEditor
   end
 
   def initiate_image(line)
+    if is_image_initialized()
+      puts "Reinitializing the image"
+    end
     self.Image = ""
 
     regex_match = line.match(/^I ([0-9]+) ([0-9]+)$/i)
