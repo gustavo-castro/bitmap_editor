@@ -24,7 +24,7 @@ class BitmapEditor
       when "S"
         show_image(line)
       else
-        puts 'unrecognised command :('
+        raise "unrecognised command :("
       end
     end
   end
@@ -119,7 +119,7 @@ class BitmapEditor
     if line.length > 1
       raise "Incorrect use of the S command"
     end
-    
+
     if self.Image.nil? || self.Image.length == 0
       puts "There is no image"
     else
